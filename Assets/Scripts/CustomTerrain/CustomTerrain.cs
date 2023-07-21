@@ -194,7 +194,8 @@ public class CustomTerrain : MonoBehaviour
   public void VoronoiTessellation()
   {
     float[,] heightMap = GetHeightMap();
-    float fallOff = 0.5f;
+    float fallOff = 0.2f;
+    float dropOff = 0.6f;
     Vector3 peak = new Vector3(256, 0.2f, 256);
     // Vector3 peak = new Vector3(UnityEngine.Random.Range(0, terrainData.heightmapResolution),
     //                            UnityEngine.Random.Range(0, 1.0f),
@@ -210,8 +211,10 @@ public class CustomTerrain : MonoBehaviour
       {
         if(!(x == peak.x && z == peak.z))
         {
-          float distanceToPeak = Vector2.Distance(peakLocation, new Vector2(x, z)) * fallOff;
-          heightMap[x, z] = peak.y - (distanceToPeak / maxDistance);
+          float distanceToPeak = Vector2.Distance(peakLocation, new Vector2(x, z)) / maxDistance;
+          // float h = peak.y - distanceToPeak * fallOff - Mathf.Pow(distanceToPeak, dropOff);
+          float h = peak.y - Mathf.Sin(distanceToPeak * 100) * 0.01f;
+          heightMap[x, z] = h;
         }
       }
     }
