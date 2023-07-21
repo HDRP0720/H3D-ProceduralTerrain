@@ -12,6 +12,7 @@ public class CustomTerrain : MonoBehaviour
   public Texture2D heightMapImage;
   public Vector3 heightMapScale = new Vector3(1, 1, 1);
 
+  [Tooltip("이전에 적용된 알고리즘과 합쳐서 터레인에 적용할지 여부를 확인 합니다.")]
   public bool addPrevTerrainHeight = true;
 
   // Perlin Noise
@@ -235,6 +236,48 @@ public class CustomTerrain : MonoBehaviour
         }
       }
     }
+
+    terrainData.SetHeights(0, 0, heightMap);
+  }
+
+  public void MidPointDisplacement() // Midpoint Displacement or Diamond Step
+  {
+    float[,] heightMap = GetHeightMap();
+    int width = terrainData.heightmapResolution -1;
+    int squreSize = width;
+    float height = (float)squreSize / 2.0f * 0.01f;
+    float roughness = 2.0f;
+    float heightDampener = Mathf.Pow(2, -1 * roughness);
+
+    int cornerX, cornerY;
+    int midX, midY;
+    int pmidXL, pmidXR, pmidYU, pmidYD;
+
+    heightMap[0, 0] = UnityEngine.Random.Range(0f, 0.2f);
+    heightMap[0, terrainData.heightmapResolution -2] = UnityEngine.Random.Range(0f, 0.2f);
+    heightMap[terrainData.heightmapResolution - 2, 0] = UnityEngine.Random.Range(0f, 0.2f);
+    heightMap[terrainData.heightmapResolution - 2, terrainData.heightmapResolution - 2] = UnityEngine.Random.Range(0f, 0.2f);
+
+    while(squreSize > 0)
+    {
+      for (int x = 0; x < width; x += squreSize)
+      {
+        for (int y = 0; y < width; y += squreSize)
+        {
+          cornerX = (x + squreSize);
+          cornerY = (y + squreSize);
+
+          midX = (int)(x + squreSize / 2.0f);
+          midY = (int)(y + squreSize / 2.0f);
+
+          heightMap[midX, midY] = (float)((heightMap[x, y] + heightMap[cornerX, y] + 
+                                           heightMap[x, cornerY] + heightMap[cornerX, cornerY]) / 4.0f 
+                                           + UnityEngine.Random.Range(-height, height));
+        }
+      }
+      squreSize = (int)(squreSize / 2.0f);
+      height *= heightDampener;
+    }   
 
     terrainData.SetHeights(0, 0, heightMap);
   }

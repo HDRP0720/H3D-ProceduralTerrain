@@ -42,6 +42,7 @@ public class CustomTerrainEditor : Editor
   bool showfBM = false;
   bool showMultiplePerlin = false;
   bool showVoronoi = false;
+  bool showMPD = false;
 
   private void OnEnable() 
   {
@@ -179,6 +180,15 @@ public class CustomTerrainEditor : Editor
       if (GUILayout.Button("Voronoi"))
       {        
         terrain.VoronoiTessellation();
+      }
+    }
+
+    showMPD = EditorGUILayout.Foldout(showMPD, "Midpoint Displacement");
+    if (showMPD)
+    {
+      if (GUILayout.Button("MPD"))
+      {
+        terrain.MidPointDisplacement();
       }
     }
 
