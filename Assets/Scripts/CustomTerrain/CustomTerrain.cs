@@ -23,24 +23,19 @@ public class CustomTerrain : MonoBehaviour
   public float perlinPersistance = 8f;
   public float perlinHeightScale = 0.09f;
 
-  // Multiple Perlin Noise
-  [System.Serializable]
-  public class PerlinParameters
-  {
-    public float perlinXScale = 0.01f;
-    public float perlinYScale = 0.01f;
-    public int perlinOctaves = 3;
-    public float perlinPersistance = 8f;
-    public float perlinHeightScale = 0.09f;
-    public int perlinOffsetX = 0;
-    public int perlinOffsetY = 0;
-    public bool remove = false;
-  }
-
+  // Multiple Perlin Noise  
   public List<PerlinParameters> perlinParameters = new List<PerlinParameters>()
   {
     new PerlinParameters()
   };
+
+  // Voronoi Parameters
+  public int peakCount;
+  public float fallOff;
+  public float dropOff;
+  public float minHeight;
+  public float maxHeight;
+  public EVoronoiType voronoiType = EVoronoiType.Linear;
 
   public Terrain terrain;
   public TerrainData terrainData;
@@ -194,27 +189,49 @@ public class CustomTerrain : MonoBehaviour
   public void VoronoiTessellation()
   {
     float[,] heightMap = GetHeightMap();
-    float fallOff = 0.2f;
-    float dropOff = 0.6f;
-    Vector3 peak = new Vector3(256, 0.2f, 256);
-    // Vector3 peak = new Vector3(UnityEngine.Random.Range(0, terrainData.heightmapResolution),
-    //                            UnityEngine.Random.Range(0, 1.0f),
-    //                            UnityEngine.Random.Range(0, terrainData.heightmapResolution));
 
-    heightMap[(int)peak.x, (int)peak.z] = peak.y;
-
-    Vector2 peakLocation = new Vector2(peak.x, peak.z);
-    float maxDistance = Vector2.Distance(new Vector2(0,0), new Vector2(terrainData.heightmapResolution, terrainData.heightmapResolution));
-    for (int z = 0; z < terrainData.heightmapResolution; z++)
+    for (int i = 0; i < peakCount; i++)
     {
-      for (int x = 0; x < terrainData.heightmapResolution; x++)
+      Vector3 peak = new Vector3(UnityEngine.Random.Range(0, terrainData.heightmapResolution),
+                               UnityEngine.Random.Range(minHeight, maxHeight),
+                               UnityEngine.Random.Range(0, terrainData.heightmapResolution));
+
+      if(heightMap[(int)peak.x, (int)peak.z] < peak.y)
+        heightMap[(int)peak.x, (int)peak.z] = peak.y;
+      else
+        continue;
+
+      Vector2 peakLocation = new Vector2(peak.x, peak.z);
+      float maxDistance = Vector2.Distance(new Vector2(0, 0), new Vector2(terrainData.heightmapResolution, terrainData.heightmapResolution));
+      for (int z = 0; z < terrainData.heightmapResolution; z++)
       {
-        if(!(x == peak.x && z == peak.z))
+        for (int x = 0; x < terrainData.heightmapResolution; x++)
         {
-          float distanceToPeak = Vector2.Distance(peakLocation, new Vector2(x, z)) / maxDistance;
-          // float h = peak.y - distanceToPeak * fallOff - Mathf.Pow(distanceToPeak, dropOff);
-          float h = peak.y - Mathf.Sin(distanceToPeak * 100) * 0.01f;
-          heightMap[x, z] = h;
+          if (!(x == peak.x && z == peak.z))
+          {
+            float distanceToPeak = Vector2.Distance(peakLocation, new Vector2(x, z)) / maxDistance;
+            float h;
+            
+            if(voronoiType == EVoronoiType.Combined)
+            {
+              h = peak.y - distanceToPeak * fallOff - Mathf.Pow(distanceToPeak, dropOff);
+            }
+            else if(voronoiType == EVoronoiType.Power)
+            {
+              h = peak.y - Mathf.Pow(distanceToPeak, dropOff) * fallOff;
+            }
+            else if (voronoiType == EVoronoiType.SinPow)
+            {
+              h = peak.y - Mathf.Pow(distanceToPeak * 3, fallOff) - Mathf.Sin(distanceToPeak * 2 * Mathf.PI) / dropOff;
+            }
+            else
+            {
+              h = peak.y - distanceToPeak * fallOff;
+            }
+           
+            if(heightMap[x, z] < h)            
+              heightMap[x, z] = h;
+          }
         }
       }
     }
@@ -237,3 +254,18 @@ public class CustomTerrain : MonoBehaviour
     terrainData.SetHeights(0, 0, heightMap);
   }  
 }
+
+[System.Serializable]
+public class PerlinParameters
+{
+  public float perlinXScale = 0.01f;
+  public float perlinYScale = 0.01f;
+  public int perlinOctaves = 3;
+  public float perlinPersistance = 8f;
+  public float perlinHeightScale = 0.09f;
+  public int perlinOffsetX = 0;
+  public int perlinOffsetY = 0;
+  public bool remove = false;
+}
+
+public enum EVoronoiType { Linear = 0, Power = 1, Combined = 2, SinPow = 3 }
