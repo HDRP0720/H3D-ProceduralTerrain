@@ -44,6 +44,9 @@ public class CustomTerrain : MonoBehaviour
   public float heightDampenerForMPD = 2.0f;
   public float roughnessForMPD = 2f;
 
+  // Smooth
+  public int smoothAmount = 1;
+
   public Terrain terrain;
   public TerrainData terrainData;
 
@@ -330,6 +333,101 @@ public class CustomTerrain : MonoBehaviour
     }
 
     terrainData.SetHeights(0, 0, heightMap);
+  }
+
+  public void SmoothBasic() // Blur: Average of neighbors
+  {
+    float[,] heightMap = GetHeightMap();
+    float width = terrainData.heightmapResolution;
+    float height = terrainData.heightmapResolution;
+
+    for (int y = 0; y < terrainData.heightmapResolution; y++)
+    {
+      for (int x = 0; x < terrainData.heightmapResolution; x++)
+      {
+        float avgHeight = 0;
+        if(y == 0 && x > 0 && x < width -1) // bottom edge
+        {
+          avgHeight = (heightMap[x, y] + heightMap[x-1, y] + heightMap[x-1, y+1] + 
+                       heightMap[x, y+1] + heightMap[x+1, y+1] + heightMap[x+1, y]) / 6.0f;
+        }
+        else if(x == 0 && y > 0 && y < height -1) // left edge
+        {
+          avgHeight = (heightMap[x, y] + heightMap[x, y+1] + heightMap[x+1, y+1] +
+                       heightMap[x+1, y] + heightMap[x+1, y-1] + heightMap[x, y-1]) / 6.0f;
+        }
+        else if(y == height -1 && x > 0 && x < width -1) // top edge
+        {
+          avgHeight = (heightMap[x, y] + heightMap[x-1, y] + heightMap[x-1, y-1] + 
+                       heightMap[x, y-1] + heightMap[x+1, y-1] + heightMap[x+1, y]) / 6.0f;
+        }
+        else if(x == width-1 && y > 0 && y < height - 1) // right edge
+        {
+          avgHeight = (heightMap[x, y] + heightMap[x, y-1] + heightMap[x - 1, y - 1] +
+                       heightMap[x-1, y] + heightMap[x-1, y+1] + heightMap[x, y+1]) / 6.0f;
+        }
+        else if(y > 0 && x > 0 && y < height -1 && x < width -1) // Main
+        {
+          avgHeight = (heightMap[x, y] + heightMap[x-1, y] + heightMap[x-1, y+1] + heightMap[x, y+1] + 
+                       heightMap[x+1, y+1] + heightMap[x+1, y] + heightMap[x+1, y-1] + heightMap[x, y-1] + heightMap[x-1, y-1]) / 9.0f;
+        }
+
+        heightMap[x, y] = avgHeight;
+      }
+    }
+
+    terrainData.SetHeights(0, 0, heightMap);
+  }
+
+  public void SmoothAdvanced()
+  {
+    float[,] heightMap = terrainData.GetHeights(0, 0, terrainData.heightmapResolution, terrainData.heightmapResolution);
+
+    float smoothProgress = 0;
+    EditorUtility.DisplayProgressBar("Smoothing Terrain", "Progress", smoothProgress);
+
+    for (int k = 0; k < smoothAmount; k++)
+    {
+      for (int y = 0; y < terrainData.heightmapResolution; y++)
+      {
+        for (int x = 0; x < terrainData.heightmapResolution; x++)
+        {
+          float avgHeight = heightMap[x, y];
+          List<Vector2> neighbours = GenerateNeighbours(new Vector2(x, y), terrainData.heightmapResolution, terrainData.heightmapResolution);
+
+          foreach (Vector2 n in neighbours)
+          {
+            avgHeight += heightMap[(int)n.x, (int)n.y];
+          }
+
+          heightMap[x, y] = avgHeight / (neighbours.Count + 1);
+        }
+      }
+      smoothProgress++;
+      EditorUtility.DisplayProgressBar("Smoothing Terrain", "Progress", smoothProgress / smoothAmount);
+    }
+
+    terrainData.SetHeights(0, 0, heightMap);
+    EditorUtility.ClearProgressBar();
+  }
+  private List<Vector2> GenerateNeighbours(Vector2 pos, int width, int height)
+  {
+    List<Vector2> neighbours = new List<Vector2>();
+    for (int y = -1; y < 2; y++)
+    {
+      for (int x = -1; x < 2; x++)
+      {
+        if(!(x == 0 && y == 0))
+        {
+          Vector2 nPos = new Vector2(Mathf.Clamp(pos.x + x, 0, width -1), Mathf.Clamp(pos.y + y, 0, height - 1));
+
+          if(!neighbours.Contains(nPos))
+            neighbours.Add(nPos);
+        }
+      }
+    }
+
+    return neighbours;
   }
 
   public void ResetTerrain()
