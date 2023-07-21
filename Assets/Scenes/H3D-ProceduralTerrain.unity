@@ -521,7 +521,7 @@ MonoBehaviour:
     perlinYScale: 0.001
     perlinOctaves: 3
     perlinPersistance: 8
-    perlinHeightScale: 1
+    perlinHeightScale: 0.09
     perlinOffsetX: 0
     perlinOffsetY: 0
     remove: 0

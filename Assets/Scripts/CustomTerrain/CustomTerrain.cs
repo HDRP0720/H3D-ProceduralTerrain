@@ -172,7 +172,6 @@ public class CustomTerrain : MonoBehaviour
 
     terrainData.SetHeights(0, 0, heightMap);
   }
-
   public void AddNewPerlin() // for multiple perlin function
   {
     perlinParameters.Add(new PerlinParameters());
@@ -190,6 +189,34 @@ public class CustomTerrain : MonoBehaviour
       keptPerlinParameters.Add(perlinParameters[0]);    
 
     perlinParameters = keptPerlinParameters;
+  }
+
+  public void VoronoiTessellation()
+  {
+    float[,] heightMap = GetHeightMap();
+    float fallOff = 0.5f;
+    Vector3 peak = new Vector3(256, 0.2f, 256);
+    // Vector3 peak = new Vector3(UnityEngine.Random.Range(0, terrainData.heightmapResolution),
+    //                            UnityEngine.Random.Range(0, 1.0f),
+    //                            UnityEngine.Random.Range(0, terrainData.heightmapResolution));
+
+    heightMap[(int)peak.x, (int)peak.z] = peak.y;
+
+    Vector2 peakLocation = new Vector2(peak.x, peak.z);
+    float maxDistance = Vector2.Distance(new Vector2(0,0), new Vector2(terrainData.heightmapResolution, terrainData.heightmapResolution));
+    for (int z = 0; z < terrainData.heightmapResolution; z++)
+    {
+      for (int x = 0; x < terrainData.heightmapResolution; x++)
+      {
+        if(!(x == peak.x && z == peak.z))
+        {
+          float distanceToPeak = Vector2.Distance(peakLocation, new Vector2(x, z)) * fallOff;
+          heightMap[x, z] = peak.y - (distanceToPeak / maxDistance);
+        }
+      }
+    }
+
+    terrainData.SetHeights(0, 0, heightMap);
   }
 
   public void ResetTerrain()

@@ -32,6 +32,7 @@ public class CustomTerrainEditor : Editor
   bool showPerlinNoise = false;
   bool showfBM = false;
   bool showMultiplePerlin = false;
+  bool showVoronoi = false;
 
   private void OnEnable() 
   {
@@ -143,6 +144,17 @@ public class CustomTerrainEditor : Editor
       if (GUILayout.Button("Apply Multiple Perlin Noise"))
       {
         terrain.MultiplePerlin();
+      }
+    }
+
+    showVoronoi = EditorGUILayout.Foldout(showVoronoi, "Voronoi");
+    if (showVoronoi)
+    {
+      EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+      GUILayout.Label("Voronoi", EditorStyles.boldLabel);
+      if (GUILayout.Button("Voronoi"))
+      {
+        terrain.VoronoiTessellation();
       }
     }
 
