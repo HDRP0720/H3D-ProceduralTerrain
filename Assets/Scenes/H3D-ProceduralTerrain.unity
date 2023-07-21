@@ -500,14 +500,14 @@ MonoBehaviour:
   randomHeightRange: {x: 0, y: 0.1}
   heightMapImage: {fileID: 2800000, guid: 0594f5ffb34e9b94989b27bf17573d7b, type: 3}
   heightMapScale: {x: 2, y: 0.5, z: 2}
-  addPrevTerrainHeight: 1
-  perlinXScale: 0.01
-  perlinYScale: 0.01
-  perlinOffsetX: 4515
-  perlinOffsetY: 6555
+  addPrevTerrainHeight: 0
+  perlinXScale: 0.018
+  perlinYScale: 0.018
+  perlinOffsetX: 6637
+  perlinOffsetY: 4956
   perlinOctaves: 1
-  perlinPersistance: 8
-  perlinHeightScale: 0.117
+  perlinPersistance: 2.64
+  perlinHeightScale: 0.151
   perlinParameters:
   - perlinXScale: 0.01
     perlinYScale: 0.01
@@ -525,5 +525,15 @@ MonoBehaviour:
     perlinOffsetX: 0
     perlinOffsetY: 0
     remove: 0
+  peakCount: 3
+  fallOff: 10
+  dropOff: 10
+  minHeight: 0.07
+  maxHeight: 0.23
+  voronoiType: 3
+  minHeightForMPD: -2.0971303
+  maxHeightForMPD: 2.0598245
+  heightDampenerForMPD: 2
+  roughnessForMPD: 2
   terrain: {fileID: 981106625}
   terrainData: {fileID: 15600000, guid: e97fc167be3171b45bc3fc80eb70c638, type: 2}

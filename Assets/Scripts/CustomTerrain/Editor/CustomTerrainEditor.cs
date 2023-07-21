@@ -36,6 +36,12 @@ public class CustomTerrainEditor : Editor
   SerializedProperty voronoiMaxHeight;
   SerializedProperty voronoiType;
 
+  // Midpoint Displacement
+  SerializedProperty minHeightForMPD;
+  SerializedProperty maxHeightForMPD;
+  SerializedProperty heightDampenerForMPD;
+  SerializedProperty roughnessForMPD;
+
   bool showRandom = false;
   bool showLoadHeights = false;
   bool showPerlinNoise = false;
@@ -71,6 +77,12 @@ public class CustomTerrainEditor : Editor
     voronoiMinHeight = serializedObject.FindProperty("minHeight");
     voronoiMaxHeight = serializedObject.FindProperty("maxHeight");
     voronoiType = serializedObject.FindProperty("voronoiType");
+
+    // Midpoint Displacement
+    minHeightForMPD = serializedObject.FindProperty("minHeightForMPD");
+    maxHeightForMPD = serializedObject.FindProperty("maxHeightForMPD");
+    heightDampenerForMPD = serializedObject.FindProperty("heightDampenerForMPD");
+    roughnessForMPD = serializedObject.FindProperty("roughnessForMPD");
   }
 
   public override void OnInspectorGUI()
@@ -186,6 +198,20 @@ public class CustomTerrainEditor : Editor
     showMPD = EditorGUILayout.Foldout(showMPD, "Midpoint Displacement");
     if (showMPD)
     {
+      EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+
+      EditorGUILayout.BeginHorizontal();
+      EditorGUILayout.LabelField(new GUIContent(string.Format("Min Height: {0}", terrain.minHeightForMPD)));
+      EditorGUILayout.LabelField(new GUIContent(string.Format("Min Height: {0}", terrain.maxHeightForMPD)));
+      EditorGUILayout.EndHorizontal();
+
+      EditorGUILayout.MinMaxSlider(ref terrain.minHeightForMPD, ref terrain.maxHeightForMPD, -10, 10);
+      EditorGUILayout.Space();
+      // EditorGUILayout.PropertyField(minHeightForMPD);
+      // EditorGUILayout.PropertyField(maxHeightForMPD);
+      EditorGUILayout.PropertyField(heightDampenerForMPD);
+      EditorGUILayout.PropertyField(roughnessForMPD);
+      EditorGUILayout.Space();
       if (GUILayout.Button("MPD"))
       {
         terrain.MidPointDisplacement();
