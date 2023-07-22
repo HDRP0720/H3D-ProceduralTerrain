@@ -535,6 +535,19 @@ MonoBehaviour:
   maxHeightForMPD: 2.1225386
   heightDampenerForMPD: 2
   roughnessForMPD: 2
-  smoothAmount: 1
+  smoothAmount: 7
+  splatHeights:
+  - texture: {fileID: 2800000, guid: 18d06890de62d443ea645cc5adec617e, type: 3}
+    minHeight: 0.1
+    maxHeight: 0.2
+    tileOffset: {x: 0, y: 0}
+    tileSize: {x: 50, y: 50}
+    remove: 0
+  - texture: {fileID: 2800000, guid: 79d5431cd68194d08a40d2bbe4ebcef9, type: 3}
+    minHeight: 0.1
+    maxHeight: 0.2
+    tileOffset: {x: 0, y: 0}
+    tileSize: {x: 50, y: 50}
+    remove: 0
   terrain: {fileID: 981106625}
   terrainData: {fileID: 15600000, guid: e97fc167be3171b45bc3fc80eb70c638, type: 2}
