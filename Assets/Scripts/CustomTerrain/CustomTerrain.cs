@@ -455,6 +455,45 @@ public class CustomTerrain : MonoBehaviour
     }
 
     terrainData.terrainLayers = newSplatPrototypes;
+
+    float[,] heightMap = terrainData.GetHeights(0, 0, terrainData.heightmapResolution, terrainData.heightmapResolution);
+    float[,,] splatMapData = new float[terrainData.alphamapWidth, terrainData.alphamapHeight, terrainData.alphamapLayers];
+
+    for (int y = 0; y < terrainData.alphamapHeight; y++)
+    {
+      for (int x = 0; x < terrainData.alphamapWidth; x++)
+      {
+        float[] splat = new float[terrainData.alphamapLayers];
+        for (int i = 0; i < splatHeights.Count; i++)
+        {
+          float thisHeightStart = splatHeights[i].minHeight;
+          float thisHeightStop = splatHeights[i].maxHeight;
+          if(heightMap[x, y] >= thisHeightStart && heightMap[x, y] <= thisHeightStop)
+          {
+            splat[i] = 1;
+          }
+        }
+        NormalizeVector(splat);
+        for (int j = 0; j < splatHeights.Count; j++)
+        {
+          splatMapData[x, y, j] = splat[j];
+        }
+      }
+    }
+    terrainData.SetAlphamaps(0, 0, splatMapData);
+  }
+  private void NormalizeVector(float[] v)
+  {
+    float total = 0;
+    for (int i = 0; i < v.Length; i++)
+    {
+      total += v[i];
+    }
+
+    for (int i = 0; i < v.Length; i++)
+    {
+      v[i] /= total;
+    }
   }
   public void AddNewSplatHeight()
   {
