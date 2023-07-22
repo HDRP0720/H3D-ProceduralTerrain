@@ -48,6 +48,10 @@ public class CustomTerrainEditor : Editor
   // Splat Maps
   GUITableState splatMapTable;
   SerializedProperty splatHeights;
+  // SerializedProperty offsetForBlending;
+  // SerializedProperty noiseXScaleForBlending;
+  // SerializedProperty noiseYScaleForBlending;
+  // SerializedProperty noiseScalerForBlending;
 
   bool showRandom = false;
   bool showLoadHeights = false;
@@ -99,6 +103,10 @@ public class CustomTerrainEditor : Editor
     // Splat Maps
     splatMapTable = new GUITableState("splatMapsTable");
     splatHeights = serializedObject.FindProperty("splatHeights");
+    // offsetForBlending = serializedObject.FindProperty("offsetForBlending");
+    // noiseXScaleForBlending = serializedObject.FindProperty("noiseXScaleForBlending");
+    // noiseYScaleForBlending = serializedObject.FindProperty("noiseYScaleForBlending");
+    // noiseScalerForBlending = serializedObject.FindProperty("noiseScalerForBlending");
   }
 
   public override void OnInspectorGUI()
@@ -250,6 +258,11 @@ public class CustomTerrainEditor : Editor
     {
       EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
       GUILayout.Label("Splat Maps", EditorStyles.boldLabel);
+
+      // EditorGUILayout.Slider(offsetForBlending, 0, 0.1f, new GUIContent("Blending Offset"));
+      // EditorGUILayout.Slider(noiseXScaleForBlending, 0.001f, 1, new GUIContent("Noise X Scale"));
+      // EditorGUILayout.Slider(noiseYScaleForBlending, 0.001f, 1, new GUIContent("Noise Y Scale"));
+      // EditorGUILayout.Slider(noiseScalerForBlending, 0, 1, new GUIContent("Noise Scaler"));
 
       splatMapTable = GUITableLayout.DrawTable(splatMapTable, serializedObject.FindProperty("splatHeights"));
       GUILayout.Space(20);
