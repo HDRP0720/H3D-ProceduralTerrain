@@ -498,8 +498,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   randomHeightRange: {x: 0, y: 0.1}
-  heightMapImage: {fileID: 2800000, guid: 0594f5ffb34e9b94989b27bf17573d7b, type: 3}
-  heightMapScale: {x: 2, y: 0.5, z: 2}
+  heightMapImage: {fileID: 2800000, guid: b6b5a82e3dc70e14783e2894977e9b93, type: 3}
+  heightMapScale: {x: 2, y: 0.1, z: 2}
   addPrevTerrainHeight: 0
   perlinXScale: 0.018
   perlinYScale: 0.018
