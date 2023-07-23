@@ -21,5 +21,5 @@ public static class Utils
     }
 
     return total / maxValue;
-  }
+  }  
 }
