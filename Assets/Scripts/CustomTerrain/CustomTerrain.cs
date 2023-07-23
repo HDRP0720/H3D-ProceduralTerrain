@@ -53,6 +53,14 @@ public class CustomTerrain : MonoBehaviour
     new SplatHeights()
   };
   
+  // Vegetation
+  public int maxTrees = 5000;
+  public int treeSpacing = 5;
+  public List<VegetationParameters> vegetation = new List<VegetationParameters>()
+  {
+    new VegetationParameters()
+  };
+
   public Terrain terrain;
   public TerrainData terrainData;
 
@@ -537,6 +545,71 @@ public class CustomTerrain : MonoBehaviour
     splatHeights = keptSplatHeights;
   }
 
+  public void PlantVegetation()
+  {
+    TreePrototype[] newTreePrototypes;
+    newTreePrototypes = new TreePrototype[vegetation.Count];
+    int tIndex = 0;
+    foreach (var t in vegetation)
+    {
+      newTreePrototypes[tIndex] = new TreePrototype();
+      newTreePrototypes[tIndex].prefab = t.prefab;
+      tIndex++;
+    }
+    terrainData.treePrototypes = newTreePrototypes;
+
+    List<TreeInstance> allVegetation = new List<TreeInstance>();
+    for (int z = 0; z < terrainData.size.z; z += treeSpacing)
+    {
+      for (int x = 0; x < terrainData.size.x; x += treeSpacing)
+      {
+        for (int tp = 0; tp < terrainData.treePrototypes.Length; tp++)
+        {
+          float thisHeight = terrainData.GetHeight(x, z) / terrainData.size.y;
+          float thisHeightStart = vegetation[tp].minHeight;
+          float thisHeightEnd = vegetation[tp].maxHeight;
+
+          if(thisHeight >= thisHeightStart && thisHeight <= thisHeightEnd)
+          {
+            TreeInstance instance = new TreeInstance();
+            instance.position = new Vector3((x + UnityEngine.Random.Range(-5.0f, 5.0f)) / terrainData.size.x,
+                                            terrainData.GetHeight(x, z) / terrainData.size.y,
+                                            (z + UnityEngine.Random.Range(-5.0f, 5.0f)) / terrainData.size.z);
+            instance.rotation = UnityEngine.Random.Range(0, 360);
+            instance.prototypeIndex = tp;
+            instance.color = Color.white;
+            instance.lightmapColor = Color.white;
+            instance.heightScale = 0.95f;
+            instance.widthScale = 0.95f;
+
+            allVegetation.Add(instance);
+            if (allVegetation.Count >= maxTrees) goto TREEDONE;
+          }          
+        }
+      }
+    }
+    TREEDONE:
+      terrainData.treeInstances = allVegetation.ToArray();
+  }
+  public void AddNewVegetation()
+  {
+    vegetation.Add(new VegetationParameters());
+  }
+  public void RemoveVegetation()
+  {
+    List<VegetationParameters> ketpVegetation = new List<VegetationParameters>();
+    for (int i = 0; i < vegetation.Count; i++)
+    {
+      if (!vegetation[i].remove)
+        ketpVegetation.Add(vegetation[i]);
+    }
+
+    if (ketpVegetation.Count == 0)
+      ketpVegetation.Add(vegetation[0]);
+
+    vegetation = ketpVegetation;
+  }
+
   public void ResetTerrain()
   {
     float[,] heightMap;
@@ -582,5 +655,16 @@ public class SplatHeights
   public float noiseXScale = 0.01f;
   public float noiseYScale = 0.01f;
   public float noiseScaler = 0.1f;
+  public bool remove = false;
+}
+
+[System.Serializable]
+public class VegetationParameters
+{
+  public GameObject prefab = null;
+  public float minHeight = 0.1f;
+  public float maxHeight = 0.2f;
+  public float minSlope = 0;
+  public float maxSlope = 90;
   public bool remove = false;
 }

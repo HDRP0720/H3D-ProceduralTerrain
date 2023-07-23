@@ -531,11 +531,11 @@ MonoBehaviour:
   minHeight: 0.07
   maxHeight: 0.23
   voronoiType: 3
-  minHeightForMPD: -2.1225386
-  maxHeightForMPD: 2.1225386
+  minHeightForMPD: -1.5697747
+  maxHeightForMPD: 1.5697747
   heightDampenerForMPD: 2
   roughnessForMPD: 2
-  smoothAmount: 7
+  smoothAmount: 2
   splatHeights:
   - texture: {fileID: 2800000, guid: 18d06890de62d443ea645cc5adec617e, type: 3}
     minHeight: 0.1
@@ -561,7 +561,7 @@ MonoBehaviour:
     noiseYScale: 0.01
     noiseScaler: 0.01
     remove: 0
-  - texture: {fileID: 2800000, guid: 8b428e4e6cc624a4c9235f69da8e3edb, type: 3}
+  - texture: {fileID: 2800000, guid: 858e483d613d848cb935156b41553e4d, type: 3}
     minHeight: 0
     maxHeight: 0.1
     minSlope: 0
@@ -572,6 +572,22 @@ MonoBehaviour:
     noiseXScale: 0.01
     noiseYScale: 0.01
     noiseScaler: 0.01
+    remove: 0
+  maxTrees: 7578
+  treeSpacing: 6
+  vegetation:
+  - prefab: {fileID: 1717292912562246659, guid: 2aa0b58ab69df834998e0dda8ee6f1e5,
+      type: 3}
+    minHeight: 0.1
+    maxHeight: 0.2
+    minSlope: 0
+    maxSlope: 90
+    remove: 1
+  - prefab: {fileID: 803122366166758208, guid: 2560472fde8a9cf4fb79e4b37dfade6a, type: 3}
+    minHeight: 0
+    maxHeight: 0.1
+    minSlope: 0
+    maxSlope: 90
     remove: 0
   terrain: {fileID: 981106625}
   terrainData: {fileID: 15600000, guid: e97fc167be3171b45bc3fc80eb70c638, type: 2}
