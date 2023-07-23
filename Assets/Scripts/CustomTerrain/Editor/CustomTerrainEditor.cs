@@ -48,10 +48,9 @@ public class CustomTerrainEditor : Editor
   // Splat Maps
   GUITableState splatMapTable;
   SerializedProperty splatHeights;
-  // SerializedProperty offsetForBlending;
-  // SerializedProperty noiseXScaleForBlending;
-  // SerializedProperty noiseYScaleForBlending;
-  // SerializedProperty noiseScalerForBlending;
+
+  // Extract Height Map
+  Texture2D hmTexture;
 
   bool showRandom = false;
   bool showLoadHeights = false;
@@ -62,6 +61,7 @@ public class CustomTerrainEditor : Editor
   bool showMPD = false;
   bool showSmooth = false;
   bool showSplatMaps = false;
+  bool showHeightMap = false;
 
   private void OnEnable() 
   {
@@ -103,10 +103,9 @@ public class CustomTerrainEditor : Editor
     // Splat Maps
     splatMapTable = new GUITableState("splatMapsTable");
     splatHeights = serializedObject.FindProperty("splatHeights");
-    // offsetForBlending = serializedObject.FindProperty("offsetForBlending");
-    // noiseXScaleForBlending = serializedObject.FindProperty("noiseXScaleForBlending");
-    // noiseYScaleForBlending = serializedObject.FindProperty("noiseYScaleForBlending");
-    // noiseScalerForBlending = serializedObject.FindProperty("noiseScalerForBlending");
+
+    // Extract Height Map
+    hmTexture = new Texture2D(513, 513, TextureFormat.ARGB32, false);
   }
 
   public override void OnInspectorGUI()
@@ -283,6 +282,37 @@ public class CustomTerrainEditor : Editor
       }
     }
 
+
+    showHeightMap = EditorGUILayout.Foldout(showHeightMap, "Height Map");
+    if (showHeightMap)
+    {
+      EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+      int wSize = (int)(EditorGUIUtility.currentViewWidth - 100);
+
+      GUILayout.BeginHorizontal();
+      GUILayout.FlexibleSpace();
+      GUILayout.Label(hmTexture, GUILayout.Width(wSize), GUILayout.Height(wSize));
+      GUILayout.FlexibleSpace();
+      GUILayout.EndHorizontal();
+
+      GUILayout.BeginHorizontal();
+      GUILayout.FlexibleSpace();
+      if(GUILayout.Button("Refresh", GUILayout.Width(wSize)))
+      {
+        float[,] heightMap = terrain.terrainData.GetHeights(0, 0, terrain.terrainData.heightmapResolution, terrain.terrainData.heightmapResolution);
+        for (int y = 0; y < terrain.terrainData.heightmapResolution; y++)
+        {
+          for (int x = 0; x < terrain.terrainData.heightmapResolution; x++)
+          {
+            hmTexture.SetPixel(x, y, new Color(heightMap[x, y], heightMap[x, y], heightMap[x, y], 1));
+          }
+        }
+        hmTexture.Apply();
+      }
+      GUILayout.FlexibleSpace();
+      GUILayout.EndHorizontal();
+    }
+ 
     EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
     if (GUILayout.Button("Reset Terrain"))
     {

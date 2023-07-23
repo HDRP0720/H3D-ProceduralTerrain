@@ -52,11 +52,7 @@ public class CustomTerrain : MonoBehaviour
   {
     new SplatHeights()
   };
-  // public float offsetForBlending = 0.01f;
-  // public float noiseXScaleForBlending = 0.01f;
-  // public float noiseYScaleForBlending = 0.01f;
-  // public float noiseScalerForBlending = 0.5f;
-
+  
   public Terrain terrain;
   public TerrainData terrainData;
 
