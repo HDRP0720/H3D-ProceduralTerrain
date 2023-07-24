@@ -176,8 +176,8 @@ PlayerSettings:
   CreateWallpaper: 0
   APKExpansionFiles: 0
   keepLoadedShadersAlive: 0
-  StripUnusedMeshComponents: 0
-  VertexChannelCompressionMask: 4054
+  StripUnusedMeshComponents: 1
+  VertexChannelCompressionMask: 326
   iPhoneSdkVersion: 988
   iOSTargetOSVersionString: 12.0
   tvOSSdkVersion: 0
@@ -780,7 +780,8 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLDecompressionFallback: 0
   webGLPowerPreference: 2
-  scriptingDefineSymbols: {}
+  scriptingDefineSymbols:
+    Standalone: THE_VEGETATION_ENGINE
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend: {}
