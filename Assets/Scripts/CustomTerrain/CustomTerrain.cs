@@ -12,7 +12,7 @@ public class CustomTerrain : MonoBehaviour
   public Texture2D heightMapImage;
   public Vector3 heightMapScale = new Vector3(1, 1, 1);
 
-  [Tooltip("이전에 적용된 알고리즘과 합쳐서 터레인에 적용할지 여부를 확인 합니다.")]
+  [Tooltip("이전에 만들어진 터레인에 적용할지 여부를 확인 합니다.")]
   public bool addPrevTerrainHeight = true;
 
   // Perlin Noise
@@ -64,6 +64,8 @@ public class CustomTerrain : MonoBehaviour
   public Terrain terrain;
   public TerrainData terrainData;
 
+  [SerializeField] private int terrainLayer = -1;
+
   private void OnEnable() 
   {
     Debug.Log("Initialising Terrain Data");
@@ -73,36 +75,56 @@ public class CustomTerrain : MonoBehaviour
   private void Reset() 
   {
     SerializedObject tagManager = new SerializedObject(AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset")[0]);
-    SerializedProperty tagsProp = tagManager.FindProperty("tags");
     
-    AddTag(tagsProp, "Terrain");
-    AddTag(tagsProp, "Cloud");
-    AddTag(tagsProp, "Shore");
+    SerializedProperty tagsProp = tagManager.FindProperty("tags");    
+    AddTag(tagsProp, "Terrain", ETagType.Tag);
+    AddTag(tagsProp, "Cloud", ETagType.Tag);
+    AddTag(tagsProp, "Shore", ETagType.Tag);
+    tagManager.ApplyModifiedProperties();
 
+    SerializedProperty layerProp = tagManager.FindProperty("layers");
+    terrainLayer = AddTag(layerProp, "Terrain", ETagType.Layer);
     tagManager.ApplyModifiedProperties();
 
     this.gameObject.tag = "Terrain";
+    this.gameObject.layer = terrainLayer;
   }
-
-  private void AddTag(SerializedProperty tagsProp, string newTag)
+  private int AddTag(SerializedProperty tagsProp, string newTag, ETagType tagType)
   {
     bool found = false;
+    // Check the tag doesn't already exist
     for (int i = 0; i < tagsProp.arraySize; i++)
     {
       SerializedProperty t = tagsProp.GetArrayElementAtIndex(i);
       if(t.stringValue.Equals(newTag))
       {
         found = true;
-        break;
+        return i;
       }      
     }
-
-    if (!found)
+    // add new tag
+    if (!found && tagType == ETagType.Tag)
     {
       tagsProp.InsertArrayElementAtIndex(0);
       SerializedProperty newTagProp = tagsProp.GetArrayElementAtIndex(0);
       newTagProp.stringValue = newTag;
     }
+    // add new layer
+    else if(!found && tagType == ETagType.Layer)
+    {
+      for (int j = 8; j < tagsProp.arraySize; j++)
+      {
+        SerializedProperty newLayer = tagsProp.GetArrayElementAtIndex(j);
+        if(newLayer.stringValue == "")
+        {
+          Debug.Log($"Adding New Layer: {newTag}");
+          newLayer.stringValue = newTag;
+          return j;
+        }
+      }
+    }
+
+    return -1; // To check error
   }
 
   private float[,] GetHeightMap()
@@ -625,6 +647,8 @@ public class CustomTerrain : MonoBehaviour
     terrainData.SetHeights(0, 0, heightMap);
   }  
 }
+
+public enum ETagType { Tag = 0, Layer = 1 }
 
 [System.Serializable]
 public class PerlinParameters
