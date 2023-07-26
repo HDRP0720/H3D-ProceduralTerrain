@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEngine;
 using EditorGUITable;
 
-[CustomEditor(typeof(CustomTerrain))] 
+[CustomEditor(typeof(CustomTerrain))]
 [CanEditMultipleObjects]
 public class CustomTerrainEditor : Editor
 {
@@ -58,6 +58,12 @@ public class CustomTerrainEditor : Editor
   SerializedProperty treeSpacing;
   GUITableState vegetationTable;
 
+  // Details
+  SerializedProperty details;
+  SerializedProperty maxDetails;
+  SerializedProperty detailSpacing;
+  GUITableState detailTable;
+
   bool showRandom = false;
   bool showLoadHeights = false;
   bool showPerlinNoise = false;
@@ -69,8 +75,9 @@ public class CustomTerrainEditor : Editor
   bool showSplatMaps = false;
   bool showHeightMap = false;
   bool showVegetation = false;
+  bool showDetails = false;
 
-  private void OnEnable() 
+  private void OnEnable()
   {
     randomHeightRange = serializedObject.FindProperty("randomHeightRange");
     heightMapImage = serializedObject.FindProperty("heightMapImage");
@@ -119,6 +126,12 @@ public class CustomTerrainEditor : Editor
     maxTrees = serializedObject.FindProperty("maxTrees");
     treeSpacing = serializedObject.FindProperty("treeSpacing");
     vegetationTable = new GUITableState("vegetationTable");
+
+    // Details
+    details = serializedObject.FindProperty("details");
+    maxDetails = serializedObject.FindProperty("maxDetails");
+    detailSpacing = serializedObject.FindProperty("detailSpacing");
+    detailTable = new GUITableState("detailTable");
   }
 
   public override void OnInspectorGUI()
@@ -130,7 +143,7 @@ public class CustomTerrainEditor : Editor
     EditorGUILayout.PropertyField(addPrevTerrainHeight);
 
     showRandom = EditorGUILayout.Foldout(showRandom, "Random");
-    if(showRandom)
+    if (showRandom)
     {
       EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
       GUILayout.Label("Set Heights Between Random Values", EditorStyles.boldLabel);
@@ -194,7 +207,7 @@ public class CustomTerrainEditor : Editor
       GUILayout.Label("Multiple Perlin Noise with fBM", EditorStyles.boldLabel);
 
       perlinParameterTable = GUITableLayout.DrawTable(perlinParameterTable, serializedObject.FindProperty("perlinParameters"));
-      
+
       GUILayout.Space(20);
 
       EditorGUILayout.BeginHorizontal();
@@ -226,7 +239,7 @@ public class CustomTerrainEditor : Editor
       EditorGUILayout.Slider(voronoiMaxHeight, 0, 1, new GUIContent("Max Height"));
       EditorGUILayout.PropertyField(voronoiType);
       if (GUILayout.Button("Voronoi"))
-      {        
+      {
         terrain.VoronoiTessellation();
       }
     }
@@ -255,18 +268,18 @@ public class CustomTerrainEditor : Editor
     }
 
     showSmooth = EditorGUILayout.Foldout(showSmooth, "Smooth Terrain");
-    if(showSmooth)
+    if (showSmooth)
     {
       EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
       EditorGUILayout.IntSlider(smoothAmount, 1, 10, new GUIContent("Smooth Amount"));
-      if(GUILayout.Button("Smooth"))
+      if (GUILayout.Button("Smooth"))
       {
         terrain.SmoothAdvanced();
       }
     }
 
     showSplatMaps = EditorGUILayout.Foldout(showSplatMaps, "Splat Maps");
-    if(showSplatMaps)
+    if (showSplatMaps)
     {
       EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
       GUILayout.Label("Splat Maps", EditorStyles.boldLabel);
@@ -280,7 +293,7 @@ public class CustomTerrainEditor : Editor
       GUILayout.Space(20);
 
       EditorGUILayout.BeginHorizontal();
-      if(GUILayout.Button("+"))
+      if (GUILayout.Button("+"))
       {
         terrain.AddNewSplatHeight();
       }
@@ -309,7 +322,7 @@ public class CustomTerrainEditor : Editor
 
       GUILayout.BeginHorizontal();
       GUILayout.FlexibleSpace();
-      if(GUILayout.Button("Refresh", GUILayout.Width(wSize)))
+      if (GUILayout.Button("Refresh", GUILayout.Width(wSize)))
       {
         float[,] heightMap = terrain.terrainData.GetHeights(0, 0, terrain.terrainData.heightmapResolution, terrain.terrainData.heightmapResolution);
         for (int y = 0; y < terrain.terrainData.heightmapResolution; y++)
@@ -351,7 +364,34 @@ public class CustomTerrainEditor : Editor
         terrain.PlantVegetation();
       }
     }
- 
+
+    showDetails = EditorGUILayout.Foldout(showDetails, "Details");
+    if (showDetails)
+    {
+      EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+      GUILayout.Label("Details", EditorStyles.boldLabel);
+      EditorGUILayout.IntSlider(maxDetails, 1, 10000, new GUIContent("Maximum Details"));
+      EditorGUILayout.IntSlider(detailSpacing, 2, 20, new GUIContent("Detail Spacing"));
+      GUILayout.Space(20);
+      detailTable = GUITableLayout.DrawTable(detailTable, serializedObject.FindProperty("details"));
+      GUILayout.Space(20);
+
+      EditorGUILayout.BeginHorizontal();
+      if (GUILayout.Button("+"))
+      {
+        terrain.AddNewDetail();
+      }
+      if (GUILayout.Button("-"))
+      {
+        terrain.RemoveDetail();
+      }
+      EditorGUILayout.EndHorizontal();
+      if (GUILayout.Button("Apply Detail"))
+      {
+        terrain.PlantDetail();
+      }
+    }
+
     EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
     if (GUILayout.Button("Reset Terrain"))
     {
