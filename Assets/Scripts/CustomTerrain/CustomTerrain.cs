@@ -70,8 +70,10 @@ public class CustomTerrain : MonoBehaviour
   };
 
   // Erosion
+  [Tooltip("침식에 따른 터레인 변형 종류 (비, 온도차이, 조수, 강, 바람)")]
   public EErosionType erosionType = EErosionType.Rain;
   public float erosionStrength = 0.1f;
+  public float erosionAmount = 0.01f;
   public int springsPerRiver = 5;
   public float solubility = 0.01f;
   public int droplets = 10;
@@ -769,7 +771,27 @@ public class CustomTerrain : MonoBehaviour
   }
   private void Thermal()
   {
+    float[,] heightMap = terrainData.GetHeights(0, 0, terrainData.heightmapResolution, terrainData.heightmapResolution);
+    for (int y = 0; y < terrainData.heightmapResolution; y++)
+    {
+      for (int x = 0; x < terrainData.heightmapResolution; x++)
+      {
+        Vector2 thisLocation = new Vector2(x, y);
+        List<Vector2> neighbours = GenerateNeighbours(thisLocation, terrainData.heightmapResolution, terrainData.heightmapResolution);
 
+        foreach (var n in neighbours)
+        {
+          if(heightMap[x, y] > heightMap[(int)n.x, (int)n.y] + erosionStrength)
+          {
+            float currentHeight = heightMap[x, y];
+            heightMap[x, y] -= currentHeight * erosionAmount;
+            heightMap[(int)n.x, (int)n.y] += currentHeight * erosionAmount;
+          }
+        }
+      }
+    }
+
+    terrainData.SetHeights(0, 0, heightMap);
   }
   private void River()
   {

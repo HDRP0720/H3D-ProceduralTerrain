@@ -209,8 +209,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.19671279, y: 0.4283259, z: -0.09629997, w: 0.8766797}
-  m_LocalPosition: {x: -48.117, y: 145.82025, z: 4.3691835}
+  m_LocalRotation: {x: 0.34694108, y: 0.0017735958, z: -0.0009054169, w: 0.93788487}
+  m_LocalPosition: {x: 420.56924, y: 472.07883, z: -172.07074}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -427,6 +427,195 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1543121110
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1543121114}
+  - component: {fileID: 1543121113}
+  - component: {fileID: 1543121112}
+  - component: {fileID: 1543121111}
+  m_Layer: 8
+  m_Name: Terrain (1)
+  m_TagString: Terrain
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 2147483647
+  m_IsActive: 1
+--- !u!114 &1543121111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1543121110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 292ec8326d1e3a843abbf0b3e9094fe0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  randomHeightRange: {x: 0, y: 0.1}
+  heightMapImage: {fileID: 0}
+  heightMapScale: {x: 1, y: 1, z: 1}
+  addPrevTerrainHeight: 0
+  perlinXScale: 0.01
+  perlinYScale: 0.01
+  perlinOffsetX: 0
+  perlinOffsetY: 0
+  perlinOctaves: 3
+  perlinPersistance: 8
+  perlinHeightScale: 0.09
+  perlinParameters:
+  - perlinXScale: 0.01
+    perlinYScale: 0.01
+    perlinOctaves: 3
+    perlinPersistance: 8
+    perlinHeightScale: 0.09
+    perlinOffsetX: 0
+    perlinOffsetY: 0
+    remove: 0
+  peakCount: 0
+  fallOff: 0
+  dropOff: 0
+  minHeight: 0
+  maxHeight: 0
+  voronoiType: 0
+  minHeightForMPD: -1.4102817
+  maxHeightForMPD: 1.460371
+  heightDampenerForMPD: 1.5
+  roughnessForMPD: 1.6
+  smoothAmount: 0
+  splatHeights:
+  - texture: {fileID: 0}
+    minHeight: 0.1
+    maxHeight: 0.2
+    minSlope: 0
+    maxSlope: 1.5
+    tileOffset: {x: 0, y: 0}
+    tileSize: {x: 50, y: 50}
+    offsetForBlending: 0.01
+    noiseXScale: 0.01
+    noiseYScale: 0.01
+    noiseScaler: 0.1
+    remove: 0
+  maxTrees: 5000
+  treeSpacing: 5
+  vegetation:
+  - prefab: {fileID: 0}
+    minHeight: 0.1
+    maxHeight: 0.2
+    minSlope: 0
+    maxSlope: 90
+    minScale: 0.5
+    maxScale: 1
+    color1: {r: 1, g: 1, b: 1, a: 1}
+    color2: {r: 1, g: 1, b: 1, a: 1}
+    lightColor: {r: 1, g: 1, b: 1, a: 1}
+    minRotation: 0
+    maxRotation: 360
+    density: 0.5
+    remove: 0
+  maxDetails: 5000
+  detailSpacing: 5
+  details:
+  - prototypePrefab: {fileID: 0}
+    prototypeTexture: {fileID: 0}
+    minHeight: 0.1
+    maxHeight: 0.2
+    minSlope: 0
+    maxSlope: 90
+    overlap: 0.01
+    feather: 0.05
+    density: 0.5
+    remove: 0
+  erosionType: 1
+  erosionStrength: 0.02
+  erosionAmount: 0.02
+  springsPerRiver: 5
+  solubility: 0.01
+  droplets: 201
+  erosionSmoothAmount: 0
+  terrain: {fileID: 1543121113}
+  terrainData: {fileID: 15600000, guid: 5a5cabf6b6a334143806a3d5488957a1, type: 2}
+  terrainLayer: 8
+--- !u!154 &1543121112
+TerrainCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1543121110}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_TerrainData: {fileID: 15600000, guid: 5a5cabf6b6a334143806a3d5488957a1, type: 2}
+  m_EnableTreeColliders: 1
+--- !u!218 &1543121113
+Terrain:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1543121110}
+  m_Enabled: 1
+  serializedVersion: 6
+  m_TerrainData: {fileID: 15600000, guid: 5a5cabf6b6a334143806a3d5488957a1, type: 2}
+  m_TreeDistance: 5000
+  m_TreeBillboardDistance: 50
+  m_TreeCrossFadeLength: 5
+  m_TreeMaximumFullLODCount: 50
+  m_DetailObjectDistance: 80
+  m_DetailObjectDensity: 1
+  m_HeightmapPixelError: 5
+  m_SplatMapDistance: 1000
+  m_HeightmapMaximumLOD: 0
+  m_ShadowCastingMode: 2
+  m_DrawHeightmap: 1
+  m_DrawInstanced: 0
+  m_DrawTreesAndFoliage: 1
+  m_StaticShadowCaster: 0
+  m_IgnoreQualitySettings: 0
+  m_ReflectionProbeUsage: 1
+  m_MaterialTemplate: {fileID: 2100000, guid: 594ea882c5a793440b60ff72d896021e, type: 2}
+  m_BakeLightProbesForTrees: 1
+  m_PreserveTreePrototypeLayers: 0
+  m_DeringLightProbesForTrees: 1
+  m_ReceiveGI: 1
+  m_ScaleInLightmap: 0.0256
+  m_LightmapParameters: {fileID: 15203, guid: 0000000000000000f000000000000000, type: 0}
+  m_GroupingID: 0
+  m_RenderingLayerMask: 1
+  m_AllowAutoConnect: 1
+  m_EnableHeightmapRayTracing: 1
+  m_EnableTreesAndDetailsRayTracing: 0
+  m_TreeMotionVectorModeOverride: 3
+--- !u!4 &1543121114
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1543121110}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1769063567
 GameObject:
   m_ObjectHideFlags: 0
@@ -445,7 +634,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1769063568
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -598,6 +787,13 @@ MonoBehaviour:
     feather: 0.05
     density: 0.5
     remove: 0
+  erosionType: 0
+  erosionStrength: 0.1
+  erosionAmount: 0.01
+  springsPerRiver: 5
+  solubility: 0.01
+  droplets: 10
+  erosionSmoothAmount: 5
   terrain: {fileID: 1769063570}
   terrainData: {fileID: 15600000, guid: 7b1b08dd9c1791e44b5ce23fcdaeba5b, type: 2}
   terrainLayer: 8
@@ -683,3 +879,4 @@ SceneRoots:
   - {fileID: 410087041}
   - {fileID: 832575519}
   - {fileID: 1769063571}
+  - {fileID: 1543121114}
