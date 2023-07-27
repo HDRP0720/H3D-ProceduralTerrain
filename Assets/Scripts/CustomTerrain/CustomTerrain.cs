@@ -69,6 +69,14 @@ public class CustomTerrain : MonoBehaviour
     new DetailParameters()
   };
 
+  // Erosion
+  public EErosionType erosionType = EErosionType.Rain;
+  public float erosionStrength = 0.1f;
+  public int springsPerRiver = 5;
+  public float solubility = 0.01f;
+  public int droplets = 10;
+  public int erosionSmoothAmount = 5;
+
   public Terrain terrain;
   public TerrainData terrainData;
 
@@ -657,6 +665,7 @@ public class CustomTerrain : MonoBehaviour
     vegetation = ketpVegetation;
   }
 
+  // TODO: find reason why terrainData.setDetail function is not working
   public void PlantDetail()
   {
     DetailPrototype[] newDetailPrototypes;
@@ -665,13 +674,14 @@ public class CustomTerrain : MonoBehaviour
     foreach (var d in details)
     {
       newDetailPrototypes[dIndex] = new DetailPrototype();
-      newDetailPrototypes[dIndex].prototype = d.prefab;
+      newDetailPrototypes[dIndex].prototype = d.prototypePrefab;
       newDetailPrototypes[dIndex].prototypeTexture = d.prototypeTexture;
       newDetailPrototypes[dIndex].healthyColor = Color.white;
       if (newDetailPrototypes[dIndex].prototype)
       {
         newDetailPrototypes[dIndex].usePrototypeMesh = true;
         newDetailPrototypes[dIndex].renderMode = DetailRenderMode.VertexLit;
+        newDetailPrototypes[dIndex].useInstancing = true;
       }
       else
       {
@@ -680,11 +690,12 @@ public class CustomTerrain : MonoBehaviour
       }
       dIndex++;
     }
-    terrainData.detailPrototypes = newDetailPrototypes;
+    terrainData.detailPrototypes = newDetailPrototypes; 
 
     for (int i = 0; i < terrainData.detailPrototypes.Length; i++)
     {
-      int[,] detailMap = new int[terrainData.detailWidth, terrainData.detailHeight];
+      int[,] detailMap = new int[terrainData.detailWidth, terrainData.detailHeight];     
+
       for (int y = 0; y < terrainData.detailHeight; y += detailSpacing)
       {
         for (int x = 0; x < terrainData.detailWidth; x += detailSpacing)
@@ -694,7 +705,8 @@ public class CustomTerrain : MonoBehaviour
           detailMap[y, x] = 1;
         }
       }
-      terrainData.SetDetailLayer(0, 0, i, detailMap);
+
+      terrainData.SetDetailLayer(0, 0, i, detailMap);  
     }
   }
   public void AddNewDetail()
@@ -714,6 +726,58 @@ public class CustomTerrain : MonoBehaviour
       ketpDetails.Add(details[0]);
 
     details = ketpDetails;
+  }
+
+  public void Erode()
+  {
+    switch (erosionType)
+    {
+      case EErosionType.Rain:
+        Rain();
+        break;
+      case EErosionType.Tidal:
+        Tidal();
+        break;
+      case EErosionType.Thermal:
+        Thermal();
+        break;
+      case EErosionType.River:
+        River();
+        break;
+      case EErosionType.Wind:
+        Wind();
+        break;
+    }
+
+    smoothAmount = erosionSmoothAmount;
+    SmoothAdvanced();    
+  }
+  private void Rain()
+  {
+    float[,] heightMap = terrainData.GetHeights(0, 0, terrainData.heightmapResolution, terrainData.heightmapResolution);
+    for (int i = 0; i < droplets; i++)
+    {
+      heightMap[UnityEngine.Random.Range(0, terrainData.heightmapResolution), 
+                UnityEngine.Random.Range(0, terrainData.heightmapResolution)] -= erosionStrength;
+    }
+
+    terrainData.SetHeights(0, 0, heightMap);
+  }
+  private void Tidal()
+  {
+
+  }
+  private void Thermal()
+  {
+
+  }
+  private void River()
+  {
+
+  }
+  private void Wind()
+  {
+
   }
 
   public void ResetTerrain()
@@ -788,7 +852,7 @@ public class VegetationParameters
 [System.Serializable]
 public class DetailParameters
 {
-  public GameObject prefab = null;
+  public GameObject prototypePrefab = null;
   public Texture2D prototypeTexture = null;
   public float minHeight = 0.1f;
   public float maxHeight = 0.2f;
@@ -799,3 +863,5 @@ public class DetailParameters
   public float density = 0.5f;
   public bool remove = false;
 }
+
+public enum EErosionType { Rain = 0, Thermal = 1, Tidal = 2, River = 3, Wind = 4 }

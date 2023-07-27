@@ -64,6 +64,14 @@ public class CustomTerrainEditor : Editor
   SerializedProperty detailSpacing;
   GUITableState detailTable;
 
+  // Erosion
+  SerializedProperty erosionType;
+  SerializedProperty erosionStrength;
+  SerializedProperty springsPerRiver;
+  SerializedProperty solubility;
+  SerializedProperty droplets;
+  SerializedProperty erosionSmoothAmount;
+
   bool showRandom = false;
   bool showLoadHeights = false;
   bool showPerlinNoise = false;
@@ -76,6 +84,7 @@ public class CustomTerrainEditor : Editor
   bool showHeightMap = false;
   bool showVegetation = false;
   bool showDetails = false;
+  bool showErosion = false;
 
   private void OnEnable()
   {
@@ -132,6 +141,15 @@ public class CustomTerrainEditor : Editor
     maxDetails = serializedObject.FindProperty("maxDetails");
     detailSpacing = serializedObject.FindProperty("detailSpacing");
     detailTable = new GUITableState("detailTable");
+
+    // Erosion
+    erosionType = serializedObject.FindProperty("erosionType");
+    erosionStrength = serializedObject.FindProperty("erosionStrength");
+    springsPerRiver = serializedObject.FindProperty("springsPerRiver");
+    solubility = serializedObject.FindProperty("solubility");
+    droplets = serializedObject.FindProperty("droplets");
+    erosionSmoothAmount = serializedObject.FindProperty("erosionSmoothAmount");
+
   }
 
   public override void OnInspectorGUI()
@@ -371,7 +389,7 @@ public class CustomTerrainEditor : Editor
       EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
       GUILayout.Label("Details", EditorStyles.boldLabel);
       EditorGUILayout.IntSlider(maxDetails, 1, 10000, new GUIContent("Maximum Details"));
-      EditorGUILayout.IntSlider(detailSpacing, 2, 20, new GUIContent("Detail Spacing"));
+      EditorGUILayout.IntSlider(detailSpacing, 1, 20, new GUIContent("Detail Spacing"));
       GUILayout.Space(20);
       detailTable = GUITableLayout.DrawTable(detailTable, serializedObject.FindProperty("details"));
       GUILayout.Space(20);
@@ -389,6 +407,24 @@ public class CustomTerrainEditor : Editor
       if (GUILayout.Button("Apply Detail"))
       {
         terrain.PlantDetail();
+      }
+    }
+
+    showErosion = EditorGUILayout.Foldout(showErosion, "Erosion");
+    if (showErosion)
+    {
+      EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+      GUILayout.Label("Erosion", EditorStyles.boldLabel);
+      EditorGUILayout.PropertyField(erosionType);
+      EditorGUILayout.Slider(erosionStrength, 0, 1, new GUIContent("Erosion Strength"));
+      EditorGUILayout.IntSlider(droplets, 0, 500, new GUIContent("Droplets"));
+      EditorGUILayout.Slider(solubility, 0.001f, 1, new GUIContent("Solubility"));
+      EditorGUILayout.IntSlider(springsPerRiver, 0, 20, new GUIContent("Springs Per River"));
+      EditorGUILayout.IntSlider(erosionSmoothAmount, 0, 10, new GUIContent("Smooth Amount"));
+
+      if (GUILayout.Button("Erode"))
+      {
+        terrain.Erode();
       }
     }
 

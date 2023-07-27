@@ -488,7 +488,7 @@ MonoBehaviour:
   maxHeightForMPD: 1.4333901
   heightDampenerForMPD: 1.5
   roughnessForMPD: 1.6
-  smoothAmount: 2
+  smoothAmount: 10
   splatHeights:
   - texture: {fileID: 2800000, guid: 5ab22b13873ff4767bf281a8c183615a, type: 3}
     minHeight: 0.1
@@ -584,11 +584,12 @@ MonoBehaviour:
     maxRotation: 360
     density: 0.5
     remove: 0
-  maxDetails: 5000
-  detailSpacing: 5
+  maxDetails: 8006
+  detailSpacing: 1
   details:
-  - prefab: {fileID: 0}
-    prototypeTexture: {fileID: 2800000, guid: d284c7c7e0d7be44e81f1021bcddfd0a, type: 3}
+  - prototypePrefab: {fileID: 1717740185897350, guid: bbeaebbe03da0c444b95f1c124d5d4c6,
+      type: 3}
+    prototypeTexture: {fileID: 0}
     minHeight: 0.1
     maxHeight: 0.2
     minSlope: 0
@@ -641,7 +642,7 @@ Terrain:
   m_HeightmapMaximumLOD: 0
   m_ShadowCastingMode: 2
   m_DrawHeightmap: 1
-  m_DrawInstanced: 0
+  m_DrawInstanced: 1
   m_DrawTreesAndFoliage: 1
   m_StaticShadowCaster: 0
   m_IgnoreQualitySettings: 0
