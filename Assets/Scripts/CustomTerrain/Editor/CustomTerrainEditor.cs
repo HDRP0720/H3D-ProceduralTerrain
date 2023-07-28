@@ -67,6 +67,7 @@ public class CustomTerrainEditor : Editor
   // Water
   SerializedProperty waterHeight;
   SerializedProperty waterPrefab;
+  SerializedProperty shorelineMaterial;
 
   // Erosion
   SerializedProperty erosionType;
@@ -151,6 +152,7 @@ public class CustomTerrainEditor : Editor
     // Water
     waterHeight = serializedObject.FindProperty("waterHeight");
     waterPrefab = serializedObject.FindProperty("waterPrefab");
+    shorelineMaterial = serializedObject.FindProperty("shorelineMaterial");
 
     // Erosion
     erosionType = serializedObject.FindProperty("erosionType");
@@ -428,10 +430,15 @@ public class CustomTerrainEditor : Editor
       GUILayout.Label("Water", EditorStyles.boldLabel);
       EditorGUILayout.Slider(waterHeight, 0, 1, new GUIContent("Water Height"));
       EditorGUILayout.PropertyField(waterPrefab);
-
       if (GUILayout.Button("Add Water"))
       {
         terrain.AddWater();
+      }
+
+      EditorGUILayout.PropertyField(shorelineMaterial);
+      if (GUILayout.Button("Add Shoreline"))
+      {
+        terrain.DrawShoreline();
       }
     }
 

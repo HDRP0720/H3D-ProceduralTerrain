@@ -535,6 +535,7 @@ MonoBehaviour:
   waterHeight: 0.02
   waterPrefab: {fileID: 1628000205839077312, guid: bdcd4ffdcb3d8f44fa9f4c02f42ffbb3,
     type: 3}
+  shorelineMaterial: {fileID: 2100000, guid: ab2cccacf8303d04d9539a9fad670d0a, type: 2}
   erosionType: 1
   erosionStrength: 0.02
   erosionAmount: 0.02
@@ -898,6 +899,7 @@ MonoBehaviour:
     remove: 0
   waterHeight: 0.5
   waterPrefab: {fileID: 0}
+  shorelineMaterial: {fileID: 0}
   erosionType: 0
   erosionStrength: 0.1
   erosionAmount: 0.01
