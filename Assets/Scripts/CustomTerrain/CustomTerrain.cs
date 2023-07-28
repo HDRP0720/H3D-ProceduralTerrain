@@ -750,8 +750,7 @@ public class CustomTerrain : MonoBehaviour
   public void DrawShoreline()
   {
     float[,] heightMap = terrainData.GetHeights(0, 0, terrainData.heightmapResolution, terrainData.heightmapResolution);
-    int quadCount = 0;
-    GameObject quads = new GameObject("QAUDS");
+    int quadCount = 0; 
     for (int y = 0; y < terrainData.heightmapResolution; y++)
     {
       for (int x = 0; x < terrainData.heightmapResolution; x++)
@@ -762,23 +761,60 @@ public class CustomTerrain : MonoBehaviour
         foreach (var n in neightbours)
         {
           if(heightMap[x, y] < waterHeight && heightMap[(int)n.x, (int)n.y] > waterHeight)
-          {
-            // if(quadCount < 1000)
-            // {
-              quadCount++;
-              GameObject go = GameObject.CreatePrimitive(PrimitiveType.Quad);
-              go.transform.localScale *= 10.0f;
-              go.name ="test" + quadCount;
-              go.transform.position = this.transform.position + new Vector3(y / (float)terrainData.heightmapResolution * terrainData.size.z,
-                                                                            waterHeight * terrainData.size.y, 
-                                                                            x / (float)terrainData.heightmapResolution * terrainData.size.x);
-              go.transform.Rotate(90, 0, 0);
-              go.tag = "Shore";
-              go.transform.parent = quads.transform;
-            // }      
+          {            
+            quadCount++;
+            GameObject go = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            go.transform.localScale *= 10.0f;
+            // go.name ="test" + quadCount;
+            go.transform.position = this.transform.position + new Vector3(y / (float)terrainData.heightmapResolution * terrainData.size.z,
+                                                                          waterHeight * terrainData.size.y, 
+                                                                          x / (float)terrainData.heightmapResolution * terrainData.size.x);
+            go.transform.LookAt(new Vector3(n.y / (float)terrainData.heightmapResolution * terrainData.size.z,
+                                            waterHeight * terrainData.size.y,
+                                            n.x / (float)terrainData.heightmapResolution * terrainData.size.x));
+            go.transform.Rotate(90, 0, 0);
+            go.tag = "Shore";            
           }
         }
       }
+    }
+
+    GameObject[] shroeQuads = GameObject.FindGameObjectsWithTag("Shore");
+    MeshFilter[] meshFilters = new MeshFilter[shroeQuads.Length];
+    for (int m = 0; m < shroeQuads.Length; m++)
+    {
+      meshFilters[m] = shroeQuads[m].GetComponent<MeshFilter>();
+    }
+    CombineInstance[] combine = new CombineInstance[meshFilters.Length];
+    int i = 0;
+    while(i < meshFilters.Length)
+    {
+      combine[i].mesh = meshFilters[i].sharedMesh;
+      combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
+      meshFilters[i].gameObject.SetActive(false);
+      i++;
+    }
+
+    GameObject currentShoreLine = GameObject.Find("ShoreLine");
+    if(currentShoreLine)    
+      DestroyImmediate(currentShoreLine);    
+
+    GameObject shoreLine = new GameObject();
+    shoreLine.name = "ShoreLine";
+    // shoreLine.AddComponent<WaveAnimation>();
+    shoreLine.transform.position = this.transform.position;
+    shoreLine.transform.rotation = this.transform.rotation;
+    MeshFilter thisMF = shoreLine.AddComponent<MeshFilter>();
+    thisMF.sharedMesh = new Mesh();
+    thisMF.sharedMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+    shoreLine.GetComponent<MeshFilter>().sharedMesh.CombineMeshes(combine);
+
+    MeshRenderer r = shoreLine.AddComponent<MeshRenderer>();
+    r.sharedMaterial = shorelineMaterial;
+
+    for (int sQ = 0; sQ < shroeQuads.Length; sQ++)
+    {
+      DestroyImmediate(shroeQuads[sQ]);
     }
   }
 
@@ -819,7 +855,7 @@ public class CustomTerrain : MonoBehaviour
   }
   private void Tidal()
   {
-
+    
   }
   private void Thermal()
   {
