@@ -69,6 +69,10 @@ public class CustomTerrain : MonoBehaviour
     new DetailParameters()
   };
 
+  // Water
+  public float waterHeight = 0.5f;
+  public GameObject waterPrefab;
+
   // Erosion
   [Tooltip("침식에 따른 터레인 변형 종류 (비, 온도차이, 조수, 강, 바람)")]
   public EErosionType erosionType = EErosionType.Rain;
@@ -728,6 +732,19 @@ public class CustomTerrain : MonoBehaviour
       ketpDetails.Add(details[0]);
 
     details = ketpDetails;
+  }
+
+  public void AddWater()
+  {
+    GameObject water = GameObject.Find("water");
+    if(!water)
+    {
+      water = Instantiate(waterPrefab, this.transform.position, this.transform.rotation);
+      water.name = "water";
+    }
+
+    water.transform.position = this.transform.position + new Vector3(terrainData.size.x / 2, waterHeight * terrainData.size.y, terrainData.size.z / 2);
+    water.transform.localScale = new Vector3(terrainData.size.x, 1, terrainData.size.z);
   }
 
   public void Erode()

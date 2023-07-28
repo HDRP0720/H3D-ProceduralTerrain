@@ -64,6 +64,10 @@ public class CustomTerrainEditor : Editor
   SerializedProperty detailSpacing;
   GUITableState detailTable;
 
+  // Water
+  SerializedProperty waterHeight;
+  SerializedProperty waterPrefab;
+
   // Erosion
   SerializedProperty erosionType;
   SerializedProperty erosionStrength;
@@ -85,6 +89,7 @@ public class CustomTerrainEditor : Editor
   bool showHeightMap = false;
   bool showVegetation = false;
   bool showDetails = false;
+  bool showWater = false;
   bool showErosion = false;
 
   private void OnEnable()
@@ -142,6 +147,10 @@ public class CustomTerrainEditor : Editor
     maxDetails = serializedObject.FindProperty("maxDetails");
     detailSpacing = serializedObject.FindProperty("detailSpacing");
     detailTable = new GUITableState("detailTable");
+
+    // Water
+    waterHeight = serializedObject.FindProperty("waterHeight");
+    waterPrefab = serializedObject.FindProperty("waterPrefab");
 
     // Erosion
     erosionType = serializedObject.FindProperty("erosionType");
@@ -409,6 +418,20 @@ public class CustomTerrainEditor : Editor
       if (GUILayout.Button("Apply Detail"))
       {
         terrain.PlantDetail();
+      }
+    }
+
+    showWater = EditorGUILayout.Foldout(showWater, "Water");
+    if(showWater)
+    {
+      EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+      GUILayout.Label("Water", EditorStyles.boldLabel);
+      EditorGUILayout.Slider(waterHeight, 0, 1, new GUIContent("Water Height"));
+      EditorGUILayout.PropertyField(waterPrefab);
+
+      if (GUILayout.Button("Add Water"))
+      {
+        terrain.AddWater();
       }
     }
 
