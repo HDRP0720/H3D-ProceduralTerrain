@@ -40,10 +40,7 @@ public class CustomTerrainEditor : Editor
   SerializedProperty minHeightForMPD;
   SerializedProperty maxHeightForMPD;
   SerializedProperty heightDampenerForMPD;
-  SerializedProperty roughnessForMPD;
-
-  // Smooth
-  SerializedProperty smoothAmount;
+  SerializedProperty roughnessForMPD;  
 
   // Splat Maps
   GUITableState splatMapTable;
@@ -78,6 +75,22 @@ public class CustomTerrainEditor : Editor
   SerializedProperty droplets;
   SerializedProperty erosionSmoothAmount;
 
+  // Cloud
+  SerializedProperty numberOfClouds;
+  SerializedProperty particlesPerClouds;
+  SerializedProperty cloudParticleSize;
+  SerializedProperty cloudSize;
+  SerializedProperty cloudMaterial;
+  SerializedProperty cloudShadowMaterial;
+  SerializedProperty cloudColor;
+  SerializedProperty cloudLineColor;
+  SerializedProperty cloudMinSpeed;
+  SerializedProperty cloudMaxSpeed;
+  SerializedProperty distanceTrevelled;
+
+  // Smooth
+  SerializedProperty smoothAmount;
+
   bool showRandom = false;
   bool showLoadHeights = false;
   bool showPerlinNoise = false;
@@ -92,6 +105,7 @@ public class CustomTerrainEditor : Editor
   bool showDetails = false;
   bool showWater = false;
   bool showErosion = false;
+  bool showCloud = false;
 
   private void OnEnable()
   {
@@ -125,10 +139,7 @@ public class CustomTerrainEditor : Editor
     minHeightForMPD = serializedObject.FindProperty("minHeightForMPD");
     maxHeightForMPD = serializedObject.FindProperty("maxHeightForMPD");
     heightDampenerForMPD = serializedObject.FindProperty("heightDampenerForMPD");
-    roughnessForMPD = serializedObject.FindProperty("roughnessForMPD");
-
-    // Smooth
-    smoothAmount = serializedObject.FindProperty("smoothAmount");
+    roughnessForMPD = serializedObject.FindProperty("roughnessForMPD");    
 
     // Splat Maps
     splatMapTable = new GUITableState("splatMapsTable");
@@ -163,6 +174,21 @@ public class CustomTerrainEditor : Editor
     droplets = serializedObject.FindProperty("droplets");
     erosionSmoothAmount = serializedObject.FindProperty("erosionSmoothAmount");
 
+    // Cloud
+    numberOfClouds = serializedObject.FindProperty("numberOfClouds");
+    particlesPerClouds = serializedObject.FindProperty("particlesPerClouds");
+    cloudParticleSize = serializedObject.FindProperty("cloudParticleSize");
+    cloudSize = serializedObject.FindProperty("cloudSize");
+    cloudMaterial = serializedObject.FindProperty("cloudMaterial");
+    cloudShadowMaterial = serializedObject.FindProperty("cloudShadowMaterial");
+    cloudColor = serializedObject.FindProperty("cloudColor");
+    cloudLineColor = serializedObject.FindProperty("cloudLineColor");
+    cloudMinSpeed = serializedObject.FindProperty("cloudMinSpeed");
+    cloudMaxSpeed = serializedObject.FindProperty("cloudMaxSpeed");
+    distanceTrevelled = serializedObject.FindProperty("distanceTrevelled");
+
+    // Smooth
+    smoothAmount = serializedObject.FindProperty("smoothAmount");
   }
 
   public override void OnInspectorGUI()
@@ -296,18 +322,7 @@ public class CustomTerrainEditor : Editor
       {
         terrain.MidPointDisplacement();
       }
-    }
-
-    showSmooth = EditorGUILayout.Foldout(showSmooth, "Smooth Terrain");
-    if (showSmooth)
-    {
-      EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
-      EditorGUILayout.IntSlider(smoothAmount, 1, 10, new GUIContent("Smooth Amount"));
-      if (GUILayout.Button("Smooth"))
-      {
-        terrain.SmoothAdvanced();
-      }
-    }
+    }    
 
     showSplatMaps = EditorGUILayout.Foldout(showSplatMaps, "Splat Maps");
     if (showSplatMaps)
@@ -458,6 +473,41 @@ public class CustomTerrainEditor : Editor
       if (GUILayout.Button("Erode"))
       {
         terrain.Erode();
+      }
+    }
+
+    showCloud = EditorGUILayout.Foldout(showCloud, "Cloud");
+    if(showCloud)
+    {
+      EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+      GUILayout.Label("Cloud", EditorStyles.boldLabel);
+      EditorGUILayout.PropertyField(numberOfClouds , new GUIContent("Number of Clouds"));
+      EditorGUILayout.PropertyField(particlesPerClouds, new GUIContent("Particles Per Clouds"));
+      EditorGUILayout.PropertyField(cloudParticleSize, new GUIContent("Cloud Particle Size"));
+      EditorGUILayout.PropertyField(cloudSize, new GUIContent("Size"));
+      EditorGUILayout.PropertyField(cloudMaterial, true);
+      EditorGUILayout.PropertyField(cloudShadowMaterial, true);
+      EditorGUILayout.PropertyField(cloudColor, new GUIContent("Color"));
+      EditorGUILayout.PropertyField(cloudLineColor, new GUIContent("Lining"));
+      EditorGUILayout.PropertyField(cloudMinSpeed, new GUIContent("Min Speed"));
+      EditorGUILayout.PropertyField(cloudMaxSpeed, new GUIContent("Max Speed"));
+      EditorGUILayout.PropertyField(distanceTrevelled, new GUIContent("Distance Trevelled"));
+
+      GUILayout.Space(20);
+      if (GUILayout.Button("Generate Clouds"))
+      {
+        terrain.GenerateCloud();
+      }
+    }
+
+    showSmooth = EditorGUILayout.Foldout(showSmooth, "Smooth Terrain");
+    if (showSmooth)
+    {
+      EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+      EditorGUILayout.IntSlider(smoothAmount, 1, 10, new GUIContent("Smooth Amount"));
+      if (GUILayout.Button("Smooth"))
+      {
+        terrain.SmoothAdvanced();
       }
     }
 

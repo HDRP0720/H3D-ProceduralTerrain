@@ -84,6 +84,19 @@ public class CustomTerrain : MonoBehaviour
   public int droplets = 10;
   public int erosionSmoothAmount = 5;
 
+  // Clouds
+  public int numberOfClouds = 1;
+  public int particlesPerClouds = 50;
+  public float cloudParticleSize = 5;
+  public Vector3 cloudSize = new Vector3(1, 1, 1);
+  public Material cloudMaterial;
+  public Material cloudShadowMaterial;
+  public Color cloudColor = Color.white;
+  public Color cloudLineColor = Color.gray;
+  public float cloudMinSpeed = 0.2f;
+  public float cloudMaxSpeed = 0.5f;
+  public float distanceTrevelled = 500;
+
   public Terrain terrain;
   public TerrainData terrainData;
 
@@ -1023,6 +1036,59 @@ public class CustomTerrain : MonoBehaviour
     CanyonCrawler(x - 1, y + 1, targetHeight + UnityEngine.Random.Range(slope, slope + 0.01f), slope, maxDepth);
     CanyonCrawler(x, y - 1, targetHeight + UnityEngine.Random.Range(slope, slope + 0.01f), slope, maxDepth);
     CanyonCrawler(x, y + 1, targetHeight + UnityEngine.Random.Range(slope, slope + 0.01f), slope, maxDepth);
+  }
+
+  public void GenerateCloud()
+  {
+    GameObject cloudManager = GameObject.Find("CloudManager");
+    if(!cloudManager)
+    {
+      cloudManager = new GameObject();
+      cloudManager.name = "CloudManager";
+      cloudManager.AddComponent<CloudManager>();
+      cloudManager.transform.position = this.transform.position;
+    }
+
+    GameObject[] allClouds = GameObject.FindGameObjectsWithTag("Cloud");
+    for (int i = 0; i < allClouds.Length; i++)
+    {
+      DestroyImmediate(allClouds[i]);
+    }
+
+    for (int c = 0; c < numberOfClouds; c++)
+    {
+      GameObject cloudGO = new GameObject();
+      cloudGO.name = $"Cloud {c}";
+      cloudGO.tag = "Cloud";
+
+      cloudGO.transform.position = cloudManager.transform.position;
+      cloudGO.transform.rotation = cloudManager.transform.rotation;
+
+      CloudController cloudController = cloudGO.AddComponent<CloudController>();
+
+      ParticleSystem cloudSystem = cloudGO.AddComponent<ParticleSystem>();
+      Renderer cloudRenderer = cloudGO.GetComponent<Renderer>();
+      cloudRenderer.material = cloudMaterial;
+      cloudRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+      cloudRenderer.receiveShadows = false;
+      ParticleSystem.MainModule main = cloudSystem.main;
+      main.loop = false;
+      main.startLifetime = Mathf.Infinity;
+      main.startSpeed = 0;
+      main.startSize = cloudParticleSize;
+      main.startColor = Color.white;
+
+      var emission = cloudSystem.emission;
+      emission.rateOverTime = 0; // all at once
+      emission.SetBursts(new ParticleSystem.Burst[] { new ParticleSystem.Burst(0.0f, (short)particlesPerClouds) });
+
+      var shape = cloudSystem.shape;
+      shape.shapeType = ParticleSystemShapeType.Sphere;
+      shape.scale = new Vector3(cloudSize.x, cloudSize.y, cloudSize.z);
+
+      cloudGO.transform.parent = cloudManager.transform;
+      cloudGO.transform.localScale = new Vector3(1, 1, 1);
+    }
   }
 
   public void ResetTerrain()
