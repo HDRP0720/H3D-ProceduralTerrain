@@ -488,7 +488,7 @@ MonoBehaviour:
   maxHeightForMPD: 1.460371
   heightDampenerForMPD: 1.5
   roughnessForMPD: 1.6
-  smoothAmount: 1
+  smoothAmount: 2
   splatHeights:
   - texture: {fileID: 2800000, guid: 3c4eba8a46a5a4aa5a00cb059b4f2ce4, type: 3}
     minHeight: 0
@@ -542,7 +542,7 @@ MonoBehaviour:
   springsPerRiver: 1
   solubility: 0.005
   droplets: 201
-  erosionSmoothAmount: 1
+  erosionSmoothAmount: 0
   terrain: {fileID: 1543121113}
   terrainData: {fileID: 15600000, guid: 5a5cabf6b6a334143806a3d5488957a1, type: 2}
   terrainLayer: 8
