@@ -711,9 +711,9 @@ public class CustomTerrain : MonoBehaviour
 
           detailMap[y, x] = 1;
         }
-      }
-
-      terrainData.SetDetailLayer(0, 0, i, detailMap);  
+      }     
+  
+      terrainData.SetDetailLayer(0, 0, i, detailMap);   
     }
   }
   public void AddNewDetail()
@@ -836,6 +836,9 @@ public class CustomTerrain : MonoBehaviour
         break;
       case EErosionType.Wind:
         Wind();
+        break;
+      case EErosionType.Canyon:
+        Canyon();
         break;
     }
 
@@ -984,6 +987,43 @@ public class CustomTerrain : MonoBehaviour
 
     terrainData.SetHeights(0, 0, heightMap);
   }
+  
+  float[,] tempHeightMap;
+  private void Canyon()
+  {
+    float digDepth = 0.05f;
+    float bankSlope = 0.001f;
+    float maxDepth = 0;
+    tempHeightMap = terrainData.GetHeights(0, 0, terrainData.heightmapResolution, terrainData.heightmapResolution);
+
+    int cx = 1;
+    int cy = UnityEngine.Random.Range(10, terrainData.heightmapResolution -10);
+
+    while (cy >= 0 && cy < terrainData.heightmapResolution && cx > 0 && cx < terrainData.heightmapResolution)
+    {
+      CanyonCrawler(cx, cy, tempHeightMap[cx, cy] - digDepth, bankSlope, maxDepth);
+      cx = cx + UnityEngine.Random.Range(1, 3);
+      cy = cy + UnityEngine.Random.Range(-2, 3);
+    }
+
+    terrainData.SetHeights(0, 0, tempHeightMap);
+  }
+  private void CanyonCrawler(int x, int y, float targetHeight, float slope, float maxDepth) // Recursive
+  {
+    if(x < 0 || x >= terrainData.heightmapResolution) return; // x is out of range of map
+    if(y < 0 || y >= terrainData.heightmapResolution) return; // y is out of range of map
+    if(targetHeight <= maxDepth) return; // check lowest level
+    if(tempHeightMap[x, y] <= targetHeight) return; // if run into lower elevation than target height
+
+    tempHeightMap[x, y] = targetHeight;
+
+    CanyonCrawler(x + 1, y, targetHeight + UnityEngine.Random.Range(slope, slope + 0.01f), slope, maxDepth);
+    CanyonCrawler(x - 1, y, targetHeight + UnityEngine.Random.Range(slope, slope + 0.01f), slope, maxDepth);
+    CanyonCrawler(x + 1, y + 1, targetHeight + UnityEngine.Random.Range(slope, slope + 0.01f), slope, maxDepth);
+    CanyonCrawler(x - 1, y + 1, targetHeight + UnityEngine.Random.Range(slope, slope + 0.01f), slope, maxDepth);
+    CanyonCrawler(x, y - 1, targetHeight + UnityEngine.Random.Range(slope, slope + 0.01f), slope, maxDepth);
+    CanyonCrawler(x, y + 1, targetHeight + UnityEngine.Random.Range(slope, slope + 0.01f), slope, maxDepth);
+  }
 
   public void ResetTerrain()
   {
@@ -993,7 +1033,7 @@ public class CustomTerrain : MonoBehaviour
     {
       for (int z = 0; z < terrainData.heightmapResolution; z++)
       {
-        heightMap[x, z] = 0;
+        heightMap[x, z] = 0.057f;
       }
     }
 
@@ -1069,4 +1109,4 @@ public class DetailParameters
   public bool remove = false;
 }
 
-public enum EErosionType { Rain = 0, Thermal = 1, Tidal = 2, River = 3, Wind = 4 }
+public enum EErosionType { Rain = 0, Thermal = 1, Tidal = 2, River = 3, Wind = 4, Canyon = 5 }

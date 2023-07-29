@@ -488,7 +488,7 @@ MonoBehaviour:
   maxHeightForMPD: 1.460371
   heightDampenerForMPD: 1.5
   roughnessForMPD: 1.6
-  smoothAmount: 2
+  smoothAmount: 1
   splatHeights:
   - texture: {fileID: 2800000, guid: 3c4eba8a46a5a4aa5a00cb059b4f2ce4, type: 3}
     minHeight: 0
@@ -502,22 +502,23 @@ MonoBehaviour:
     noiseYScale: 0.01
     noiseScaler: 0.1
     remove: 0
-  maxTrees: 5000
+  maxTrees: 10000
   treeSpacing: 5
   vegetation:
-  - prefab: {fileID: 0}
+  - prefab: {fileID: 4012337630082778474, guid: cce4d8667f2436a479759f07084d8ff4,
+      type: 3}
     minHeight: 0.1
     maxHeight: 0.2
     minSlope: 0
-    maxSlope: 90
-    minScale: 0.5
-    maxScale: 1
+    maxSlope: 70
+    minScale: 0.8
+    maxScale: 2
     color1: {r: 1, g: 1, b: 1, a: 1}
     color2: {r: 1, g: 1, b: 1, a: 1}
     lightColor: {r: 1, g: 1, b: 1, a: 1}
     minRotation: 0
     maxRotation: 360
-    density: 0.5
+    density: 1
     remove: 0
   maxDetails: 5000
   detailSpacing: 5
@@ -532,11 +533,11 @@ MonoBehaviour:
     feather: 0.05
     density: 0.5
     remove: 0
-  waterHeight: 0.02
+  waterHeight: 0.04
   waterPrefab: {fileID: 1628000205839077312, guid: bdcd4ffdcb3d8f44fa9f4c02f42ffbb3,
     type: 3}
   shorelineMaterial: {fileID: 2100000, guid: ab2cccacf8303d04d9539a9fad670d0a, type: 2}
-  erosionType: 4
+  erosionType: 5
   erosionStrength: 0.891
   erosionAmount: 0.02
   springsPerRiver: 1
