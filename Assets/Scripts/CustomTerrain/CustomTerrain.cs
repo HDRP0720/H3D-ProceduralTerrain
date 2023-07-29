@@ -953,7 +953,28 @@ public class CustomTerrain : MonoBehaviour
   }
   private void Wind()
   {
+    float[,] heightMap = terrainData.GetHeights(0, 0, terrainData.heightmapResolution, terrainData.heightmapResolution);
+    int width = terrainData.heightmapResolution;
+    int height = terrainData.heightmapResolution;
 
+    for (int y = 0; y <= height; y += 10)
+    {
+      for (int x = 0; x <= width; x += 1)
+      {
+        float thisNoise = Mathf.PerlinNoise(x*0.06f, y*0.06f) * 20 * erosionStrength;
+        int nx = x;
+        int digY = y + (int)thisNoise;
+        int ny = y + 5 + (int)thisNoise;
+
+        if(!(nx < 0 || nx > width -1 || ny < 0 || ny > height - 1))
+        {
+          heightMap[x, digY] -= 0.001f;
+          heightMap[nx, ny] += 0.001f;
+        }
+      }
+    }
+
+    terrainData.SetHeights(0, 0, heightMap);
   }
 
   public void ResetTerrain()
