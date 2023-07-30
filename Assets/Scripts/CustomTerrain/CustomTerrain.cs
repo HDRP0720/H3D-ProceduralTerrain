@@ -1065,6 +1065,12 @@ public class CustomTerrain : MonoBehaviour
       cloudGO.transform.rotation = cloudManager.transform.rotation;
 
       CloudController cloudController = cloudGO.AddComponent<CloudController>();
+      cloudController.lineColor = cloudLineColor;
+      cloudController.color = cloudColor;
+      cloudController.numberOfParticles = particlesPerClouds;
+      cloudController.minSpeed = cloudMinSpeed;
+      cloudController.maxSpeed = cloudMaxSpeed;
+      cloudController.distance = distanceTrevelled;
 
       ParticleSystem cloudSystem = cloudGO.AddComponent<ParticleSystem>();
       Renderer cloudRenderer = cloudGO.GetComponent<Renderer>();
