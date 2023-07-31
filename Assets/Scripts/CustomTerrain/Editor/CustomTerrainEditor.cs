@@ -77,9 +77,10 @@ public class CustomTerrainEditor : Editor
 
   // Cloud
   SerializedProperty numberOfClouds;
-  SerializedProperty particlesPerClouds;
-  SerializedProperty cloudParticleSize;
-  SerializedProperty cloudSize;
+  SerializedProperty particlesPerClouds; 
+  SerializedProperty cloudScaleMin;
+  SerializedProperty cloudScaleMax;
+  SerializedProperty cloudParticleStartSize;
   SerializedProperty cloudMaterial;
   SerializedProperty cloudShadowMaterial;
   SerializedProperty cloudColor;
@@ -177,8 +178,9 @@ public class CustomTerrainEditor : Editor
     // Cloud
     numberOfClouds = serializedObject.FindProperty("numberOfClouds");
     particlesPerClouds = serializedObject.FindProperty("particlesPerClouds");
-    cloudParticleSize = serializedObject.FindProperty("cloudParticleSize");
-    cloudSize = serializedObject.FindProperty("cloudSize");
+    cloudScaleMin = serializedObject.FindProperty("cloudScaleMin");
+    cloudScaleMax = serializedObject.FindProperty("cloudScaleMax");
+    cloudParticleStartSize = serializedObject.FindProperty("cloudParticleStartSize");    
     cloudMaterial = serializedObject.FindProperty("cloudMaterial");
     cloudShadowMaterial = serializedObject.FindProperty("cloudShadowMaterial");
     cloudColor = serializedObject.FindProperty("cloudColor");
@@ -483,8 +485,10 @@ public class CustomTerrainEditor : Editor
       GUILayout.Label("Cloud", EditorStyles.boldLabel);
       EditorGUILayout.PropertyField(numberOfClouds , new GUIContent("Number of Clouds"));
       EditorGUILayout.PropertyField(particlesPerClouds, new GUIContent("Particles Per Clouds"));
-      EditorGUILayout.PropertyField(cloudParticleSize, new GUIContent("Cloud Particle Size"));
-      EditorGUILayout.PropertyField(cloudSize, new GUIContent("Size"));
+      EditorGUILayout.PropertyField(cloudScaleMin, new GUIContent("Cloud Scale Minimum"));
+      EditorGUILayout.PropertyField(cloudScaleMax, new GUIContent("Cloud Scale Maximum"));
+      EditorGUILayout.PropertyField(cloudParticleStartSize, new GUIContent("Cloud Particle Size"));
+      // EditorGUILayout.PropertyField(cloudSize, new GUIContent("Size"));
       EditorGUILayout.PropertyField(cloudMaterial, true);
       EditorGUILayout.PropertyField(cloudShadowMaterial, true);
       EditorGUILayout.PropertyField(cloudColor, new GUIContent("Color"));

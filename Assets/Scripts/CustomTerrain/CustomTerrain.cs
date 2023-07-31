@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 [ExecuteInEditMode]
 public class CustomTerrain : MonoBehaviour
@@ -87,8 +88,9 @@ public class CustomTerrain : MonoBehaviour
   // Clouds
   public int numberOfClouds = 1;
   public int particlesPerClouds = 50;
-  public float cloudParticleSize = 5;
-  public Vector3 cloudSize = new Vector3(1, 1, 1);
+  public Vector3 cloudScaleMin = new Vector3(1, 1, 1);
+  public Vector3 cloudScaleMax = new Vector3(1, 1, 1);
+  public float cloudParticleStartSize = 5;
   public Material cloudMaterial;
   public Material cloudShadowMaterial;
   public Color cloudColor = Color.white;
@@ -115,11 +117,12 @@ public class CustomTerrain : MonoBehaviour
     SerializedProperty tagsProp = tagManager.FindProperty("tags");
     AddTag(tagsProp, "Terrain", ETagType.Tag);
     AddTag(tagsProp, "Cloud", ETagType.Tag);
-    AddTag(tagsProp, "Shore", ETagType.Tag);
+    AddTag(tagsProp, "Shore", ETagType.Tag); 
     tagManager.ApplyModifiedProperties();
 
     SerializedProperty layerProp = tagManager.FindProperty("layers");
-    terrainLayer = AddTag(layerProp, "Terrain", ETagType.Layer);
+    AddTag(layerProp, "Sky", ETagType.Layer);
+    terrainLayer = AddTag(layerProp, "Terrain", ETagType.Layer);   
     tagManager.ApplyModifiedProperties();
 
     this.gameObject.tag = "Terrain";
@@ -1046,7 +1049,9 @@ public class CustomTerrain : MonoBehaviour
       cloudManager = new GameObject();
       cloudManager.name = "CloudManager";
       cloudManager.AddComponent<CloudManager>();
-      cloudManager.transform.position = this.transform.position;
+      // cloudManager.transform.position = this.transform.position;
+      cloudManager.transform.position = new Vector3(terrainData.size.x / 2, terrainData.size.y + 100, terrainData.size.z /2);
+      cloudManager.transform.localScale = new Vector3(terrainData.size.x * 6, 100, terrainData.size.z * 6);
     }
 
     GameObject[] allClouds = GameObject.FindGameObjectsWithTag("Cloud");
@@ -1060,9 +1065,11 @@ public class CustomTerrain : MonoBehaviour
       GameObject cloudGO = new GameObject();
       cloudGO.name = $"Cloud {c}";
       cloudGO.tag = "Cloud";
-
+      cloudGO.layer = LayerMask.NameToLayer("Sky");
       cloudGO.transform.position = cloudManager.transform.position;
       cloudGO.transform.rotation = cloudManager.transform.rotation;
+      cloudGO.transform.parent = cloudManager.transform;
+      cloudGO.transform.localScale = new Vector3(1, 1, 1);
 
       CloudController cloudController = cloudGO.AddComponent<CloudController>();
       cloudController.lineColor = cloudLineColor;
@@ -1074,14 +1081,14 @@ public class CustomTerrain : MonoBehaviour
 
       ParticleSystem cloudSystem = cloudGO.AddComponent<ParticleSystem>();
       Renderer cloudRenderer = cloudGO.GetComponent<Renderer>();
-      cloudRenderer.material = cloudMaterial;
+      cloudRenderer.material = cloudMaterial;     
       cloudRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
       cloudRenderer.receiveShadows = false;
       ParticleSystem.MainModule main = cloudSystem.main;
       main.loop = false;
       main.startLifetime = Mathf.Infinity;
       main.startSpeed = 0;
-      main.startSize = cloudParticleSize;
+      main.startSize = cloudParticleStartSize;
       main.startColor = Color.white;
 
       var emission = cloudSystem.emission;
@@ -1090,10 +1097,21 @@ public class CustomTerrain : MonoBehaviour
 
       var shape = cloudSystem.shape;
       shape.shapeType = ParticleSystemShapeType.Sphere;
-      shape.scale = new Vector3(cloudSize.x, cloudSize.y, cloudSize.z);
+      Vector3 newScale = new Vector3(UnityEngine.Random.Range(cloudScaleMin.x, cloudScaleMax.x),
+                                     UnityEngine.Random.Range(cloudScaleMin.y, cloudScaleMax.y),
+                                     UnityEngine.Random.Range(cloudScaleMin.z, cloudScaleMax.z));
+      shape.scale = newScale;      
 
-      cloudGO.transform.parent = cloudManager.transform;
-      cloudGO.transform.localScale = new Vector3(1, 1, 1);
+      GameObject cloudShadow = new GameObject();
+      cloudShadow.name = "Cloud Shadow";
+      cloudShadow.transform.position = cloudGO.transform.position;
+      cloudShadow.transform.forward = Vector3.down;
+      cloudShadow.transform.parent = cloudGO.transform;
+
+      DecalProjector dp = cloudShadow.AddComponent<DecalProjector>();
+      dp.material = cloudShadowMaterial;
+      dp.size = new Vector3(cloudParticleStartSize * 0.5f, cloudParticleStartSize * 0.5f, 2 * terrainData.size.y + 200);
+      dp.fadeFactor = 0.3f;      
     }
   }
 
